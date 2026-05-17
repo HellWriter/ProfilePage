@@ -13,10 +13,10 @@ const axios = {
 
 const mockUser = {
   id: 1,
-  name: "Gilang Ramadhan",
-  username: "@gilangr",
+  name: "Gilang Febrian",
+  username: "@gilangfebrian",
   city: "Yogyakarta, Indonesia",
-  joinDate: "Maret 2023",
+  joinDate: "Maret 2024",
   bio: "Food enthusiast & culinary explorer. Selalu mencari hidden gems kuliner lokal yang autentik. Percaya bahwa makanan terbaik ada di warung pinggir jalan.",
   avatar: "GR",
   stats: { ulasan: 29, rating: 4.7, helpful: 173 },
