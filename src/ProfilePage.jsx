@@ -44,17 +44,6 @@ const reviews = [
   { id: 5, restaurant: "Es Dawet Ibu Hamid",  category: "Minuman & Dessert", location: "Pasar Beringharjo, Yogyakarta",    rating: 5, date: "1 bulan lalu",  title: '"Dawet paling segar se-Malioboro!"',          content: "Santan segar, gula jawa asli, cendol hijau yang kenyal. Disajikan dengan es batu serut. Harganya sangat murah untuk kualitas yang luar biasa.", tags: ["Es Dawet","Segar","Legendaris"], helpful: 57},
 ];
 
-const wishlist = [
-  { icon: "🏡", name: "Jejamuran Restaurant" },
-  { icon: "👑", name: "Bale Raos Keraton" },
-  { icon: "🌿", name: "Mediterania Cafe" },
-  { icon: "☕", name: "Warung Kopi Klotok 2" },
-  { icon: "🍲", name: "Soto Pak Min Klaten" },
-  { icon: "🍚", name: "Nasi Liwet Bu Wongso" },
-  { icon: "🐟", name: "Mangut Lele Mbah Marto" },
-  { icon: "🍗", name: "Ayam Goreng Suharti" },
-];
-
 const monoColors = ["#212529", "#495057", "#868e96", "#ced4da", "#dee2e6"];
 
 function StarRating({ rating }) {
@@ -77,7 +66,7 @@ function Toast({ message, onClose }) {
       className="position-fixed bottom-0 start-50 translate-middle-x mb-4 d-flex align-items-center gap-2 text-white rounded-pill px-4 py-2 shadow"
       style={{ background: "#212529", zIndex: 1060, fontSize: "0.85rem" }}
     >
-      <span style={{ color: "#69db7c" }}>✓</span>
+      <span style={{ color: "#212529" }}>✓</span>
       {message}
     </div>
   );
@@ -219,10 +208,9 @@ function ReviewCard({ review }) {
   const [helpfulCount, setHelpfulCount] = useState(review.helpful);
 
   const toggleLike = () => {
-    setLiked((prev) => {
-      setHelpfulCount((c) => prev ? c - 1 : c + 1);
-      return !prev;
-    });
+    const newLiked = !liked;
+    setLiked(newLiked);
+    setHelpfulCount((c) => newLiked ? c + 1 : c - 1);
   };
 
   return (
@@ -270,7 +258,7 @@ function ReviewCard({ review }) {
   );
 }
 
-export default function ProfilePage() {
+export default function ProfilePage({ favorites, onNavigateToFavorite }) {
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const [editOpen, setEditOpen] = useState(false);
@@ -341,7 +329,7 @@ export default function ProfilePage() {
       <div className="container py-4" style={{ maxWidth: 960 }}>
 
         <div className="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden">
-          <div style={{ height: 110, background: "linear-gradient(135deg, #343a40, #212529)" }} />
+          <div style={{ height: 110, background: "linear-gradient(135deg, #495057, #212529)" }} />
           <div className="card-body pt-0">
             <div className="d-flex align-items-end justify-content-between" style={{ marginTop: -44 }}>
               <div
@@ -446,8 +434,8 @@ export default function ProfilePage() {
             <div className="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
               <div className="btn-group btn-group-sm" role="group">
                 {[
-                  { key: "ulasan",   label: `Ulasan (${reviews.length})` },
-                  { key: "wishlist", label: `Wishlist (${wishlist.length})` },
+                  { key: "ulasan",  label: `Ulasan (${reviews.length})` },
+                  { key: "favorit", label: `Favorit (${favorites.length})` },
                 ].map((tab) => (
                   <button
                     key={tab.key}
@@ -491,27 +479,76 @@ export default function ProfilePage() {
               </>
             )}
 
-            {activeTab === "wishlist" && (
-              <div className="d-flex flex-column gap-2">
-                {wishlist.map((w) => (
-                  <div key={w.name} className="card border shadow-sm rounded-3">
-                    <div className="card-body py-2 px-3 d-flex align-items-center justify-content-between">
-                      <div className="d-flex align-items-center gap-3">
+            {activeTab === "favorit" && (
+              <>
+                <div className="mb-3">
+                  <button
+                    onClick={onNavigateToFavorite}
+                    className="btn btn-sm"
+                    style={{
+                      background: "#212529",
+                      color: "#fff",
+                      border: "1px solid #212529",
+                      fontSize: "0.8rem",
+                    }}
+                  >
+                    💖 Lihat Halaman Favorit Lengkap
+                  </button>
+                </div>
+                <div className="d-flex flex-column gap-2">
+                  {favorites.length > 0 ? (
+                    favorites.map((fav) => (
+                      <div key={fav.id} className="card border shadow-sm rounded-3 overflow-hidden">
                         <div
-                          className="rounded-2 d-flex align-items-center justify-content-center flex-shrink-0"
-                          style={{ width: 36, height: 36, background: "#f1f3f5", fontSize: "1.1rem" }}
-                        >
-                          {w.icon}
+                          style={{
+                            height: 3,
+                            background: fav.visited ? "#212529" : "#868e96",
+                          }}
+                        />
+                        <div className="card-body py-2 px-3 d-flex align-items-center justify-content-between">
+                          <div className="d-flex align-items-center gap-3">
+                            <div
+                              className="rounded-2 d-flex align-items-center justify-content-center flex-shrink-0"
+                              style={{ width: 36, height: 36, background: "#f1f3f5", fontSize: "1.1rem" }}
+                            >
+                              {fav.icon}
+                            </div>
+                            <div>
+                              <span className="fw-medium small d-block" style={{ color: "#212529" }}>{fav.name}</span>
+                              <span className="badge rounded-pill border me-2" style={{ background: "#f8f9fa", color: "#868e96", fontWeight: 400, fontSize: "0.7rem" }}>
+                                {fav.category}
+                              </span>
+                              <span
+                                className="badge rounded-pill"
+                                style={{
+                                  background: fav.visited ? "#e9ecef" : "#f1f3f5",
+                                  color: fav.visited ? "#212529" : "#495057",
+                                  fontWeight: 400,
+                                  fontSize: "0.7rem",
+                                  border: "1px solid " + (fav.visited ? "#dee2e6" : "#dee2e6"),
+                                }}
+                              >
+                                {fav.visited ? "✓ Dikunjungi" : "○ Belum Dikunjungi"}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="text-end flex-shrink-0">
+                            <div style={{ fontSize: "0.85rem", color: "#212529", letterSpacing: "1px" }}>
+                              ★★★★★
+                            </div>
+                            <span className="fw-semibold small" style={{ color: "#212529" }}>{fav.rating}</span>
+                          </div>
                         </div>
-                        <span className="fw-medium small" style={{ color: "#212529" }}>{w.name}</span>
                       </div>
-                      <span className="badge border rounded-pill" style={{ background: "#f8f9fa", color: "#868e96", fontWeight: 400, fontSize: "0.7rem" }}>
-                        Belum dikunjungi
-                      </span>
+                    ))
+                  ) : (
+                    <div className="card border text-center py-5">
+                      <p className="display-6 mb-2">❤️</p>
+                      <p className="text-secondary small">Belum ada restoran favorit.</p>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  )}
+                </div>
+              </>
             )}
           </div>
         </div>
