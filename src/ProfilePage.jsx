@@ -340,7 +340,7 @@ export default function ProfilePage({ favorites, onNavigateToFavorite }) {
               </div>
               <button
                 onClick={() => setEditOpen(true)}
-                className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1 mb-1"
+                className="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center gap-1"
               >
                 ✏️ Edit Profil
               </button>
